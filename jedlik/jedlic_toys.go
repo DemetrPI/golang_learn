@@ -1,0 +1,31 @@
+package jedlik
+
+import (
+	"fmt"
+	"strings"
+)
+
+// TODO: define the 'Drive()' method
+func (car *Car) Drive() {
+	if car.battery-car.batteryDrain < 0 {
+		return
+	}
+	car.battery = car.battery - car.batteryDrain
+	car.distance = car.distance + car.speed
+	fmt.Printf("Car distance, %d", car.distance)
+}
+
+// TODO: define the 'DisplayDistance() string' method
+func (car *Car) DisplayDistance() string {
+	return fmt.Sprintf("Driven %d meters", car.distance)
+}
+
+// TODO: define the 'DisplayBattery() string' method
+func (car *Car) DisplayBattery() string {
+	return fmt.Sprintf("Battery at %d%%", car.battery)
+}
+
+// TODO: define the 'CanFinish(trackDistance int) bool' method
+func (car *Car) CanFinish(trackDistance int) bool {
+	return trackDistance <= (car.battery/car.batteryDrain)*car.speed
+}
