@@ -2,7 +2,6 @@ package jedlik
 
 import (
 	"fmt"
-	"strings"
 )
 
 // TODO: define the 'Drive()' method
