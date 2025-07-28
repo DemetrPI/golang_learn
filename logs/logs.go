@@ -5,6 +5,12 @@ import (
 	"unicode/utf8"
 )
 
+var charApp = map[rune]string{
+  '❗': "recommendation",
+  '🔍': "search",
+  '☀': "weather",
+}
+
 // Application identifies the application emitting the given log.
 func Application(log string) string {
 	for _, char := range log {
@@ -18,6 +24,19 @@ func Application(log string) string {
 		}
 	}
 	return "default"
+}
+// Another solution
+func ApplicationLog(log string) string {
+  for _, char := range log {
+    // Check if the char exists as a key in charApp
+    // and if it found then return the application
+    // string for it
+    if app, found := charApp[char]; found {
+      return app
+    }
+  }
+ 
+  return "default"
 }
 
 // Relace replaces all occurrences of old with new, returning the modified log
