@@ -6,13 +6,12 @@ import (
 )
 
 func IsValidLine(text string) bool {
-	re := regexp.MustCompile(`^(\[TRC\]|\[DBG\]|\[INF\]|\[WRN\]|\[ERR\]|\[FTL\])`)
+	var re = regexp.MustCompile(`^\[(TRC|DBG|INF|WRN|ERR|FTL)\]`)
 	return re.MatchString(text)
 }
 
 func SplitLogLine(text string) []string {
-	re := regexp.MustCompile(`<[~=*-]+>|<>`).Split(text, -1)
-	return re
+	return regexp.MustCompile(`<[~=*-]+>|<>`).Split(text, -1)
 }
 
 func CountQuotedPasswords(lines []string) int {
@@ -31,17 +30,15 @@ func RemoveEndOfLineText(text string) string {
 }
 
 func TagWithUserName(lines []string) []string {
-
 	taggedLines := make([]string, 0, len(lines))
 	re := regexp.MustCompile(`User\s+(\S+)`)
 	for _, line := range lines {
-		submatch := re.FindStringSubmatch(line)
-		if submatch == nil {
-			taggedLines = append(taggedLines, line)
-		} else {
+		if submatch := re.FindStringSubmatch(line); submatch != nil {
 			userName := submatch[1]
-			taggedLine := fmt.Sprintf("[USR] %s %s", userName, line)
-			taggedLines = append(taggedLines, taggedLine)
+			tagged := fmt.Sprintf("[USR] %s %s", userName, line)
+			taggedLines = append(taggedLines, tagged)
+		} else {
+			taggedLines = append(taggedLines, line)
 		}
 	}
 	return taggedLines
