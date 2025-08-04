@@ -3,12 +3,12 @@ package meteorology
 import "fmt"
 
 const (
-	Celsius    TemperatureUnit = 0
-	Fahrenheit TemperatureUnit = 1
+	Celsius TemperatureUnit = iota
+	Fahrenheit
 )
 const (
-	KmPerHour    SpeedUnit = 0
-	MilesPerHour SpeedUnit = 1
+	KmPerHour SpeedUnit = iota
+	MilesPerHour
 )
 
 type Stringer interface {
@@ -16,6 +16,7 @@ type Stringer interface {
 }
 type TemperatureUnit int
 type SpeedUnit int
+
 type Speed struct {
 	magnitude int
 	unit      SpeedUnit
@@ -33,16 +34,29 @@ type MeteorologyData struct {
 }
 
 func (st TemperatureUnit) String() string {
-	units := []string{"°C", "°F"}
-	return units[st]
+	switch st {
+	case Celsius:
+		return "°C"
+	case Fahrenheit:
+		return "°F"
+	default:
+		return fmt.Sprintf("unknown unit (%d)", st)
+	}
 }
 func (t Temperature) String() string {
 	return fmt.Sprintf("%v %v", t.degree, t.unit)
 }
 
+var speedUnits = map[SpeedUnit]string{
+	KmPerHour:    "km/h",
+	MilesPerHour: "mph",
+}
+
 func (su SpeedUnit) String() string {
-	units := []string{"km/h", "mph"}
-	return units[su]
+	if str, ok := speedUnits[su]; ok {
+		return str
+	}
+	return fmt.Sprintf("unknown unit (%d)", su)
 }
 
 func (s Speed) String() string {
