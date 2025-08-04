@@ -6,6 +6,8 @@ import (
 )
 
 var errDeterminingAmount = errors.New("amount could not be determined")
+var errDeterminingFactor = errors.New("factor could not be determined")
+var errInvalidNumberOfCows = errors.New("invalid number of cows")
 
 type InvalidCowsError struct {
 	number  int
@@ -21,33 +23,36 @@ func DivideFood(f FodderCalculator, cowsNum int) (float64, error) {
 	if err != nil {
 		return 0, errDeterminingAmount
 	}
-
 	fatteningFactor, err := f.FatteningFactor()
 	if err != nil {
-		return 0, errors.New("factor could not be determined")
+		return 0, errDeterminingFactor
 	} else {
 		return totalAmountOfFodder * fatteningFactor / float64(cowsNum), nil
 	}
 }
 
 func ValidateInputAndDivideFood(f FodderCalculator, cowsNum int) (float64, error) {
-	if cowsNum <= 0 {
-		return 0, errors.New("invalid number of cows")
+	if err:= ValidateNumberOfCows(cowsNum); err!=nil {
+		return 0, errInvalidNumberOfCows
 	}
 	return DivideFood(f, cowsNum)
 }
 
 func ValidateNumberOfCows(cowsNum int) error {
-	if cowsNum < 0 {
-		return &InvalidCowsError{
-			number:  cowsNum,
-			message: "there are no negative cows",
+	switch {
+	case cowsNum < 0:
+		{
+			return &InvalidCowsError{
+				number:  cowsNum,
+				message: "there are no negative cows",
+			}
 		}
-	} else if cowsNum == 0 {
+	case cowsNum == 0:
 		return &InvalidCowsError{
 			number:  cowsNum,
 			message: "no cows don't need food",
 		}
+	default:
+		return nil
 	}
-	return nil
 }
