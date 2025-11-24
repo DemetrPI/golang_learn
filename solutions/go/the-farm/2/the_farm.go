@@ -1,21 +1,27 @@
 package thefarm
 
 import (
+	"errors"
 	"fmt"
-"errors"
 )
-var errInvalidNumberOfCows = errors.New("invalid number of cows")
 
+var errInvalidNumberOfCows = errors.New("invalid number of cows")
+var errDeterminingAmount = errors.New("error determining amount of fodder")
+var errDeterminingFactor = errors.New("error determining fattening factor")
+
+type FodderCalculator interface {
+	FodderAmount(int) (float64, error)
+	FatteningFactor() (float64, error)
+}
 
 type InvalidCowsError struct {
-	number int
+	number  int
 	message string
 }
 
 func (e *InvalidCowsError) Error() string {
 	return fmt.Sprintf("%d cows are invalid: %s", e.number, e.message)
 }
-
 
 func DivideFood(f FodderCalculator, cowsNum int) (float64, error) {
 	totalAmountOfFodder, err := f.FodderAmount(cowsNum)
@@ -26,13 +32,13 @@ func DivideFood(f FodderCalculator, cowsNum int) (float64, error) {
 	fatteningFactor, err := f.FatteningFactor()
 	if err != nil {
 		return 0, errDeterminingFactor
-	} 
-		return totalAmountOfFodder * fatteningFactor / float64(cowsNum), nil
-	
+	}
+	return totalAmountOfFodder * fatteningFactor / float64(cowsNum), nil
+
 }
 
 func ValidateInputAndDivideFood(f FodderCalculator, cowsNum int) (float64, error) {
-	if err:= ValidateNumberOfCows(cowsNum); err!=nil {
+	if err := ValidateNumberOfCows(cowsNum); err != nil {
 		return 0, errInvalidNumberOfCows
 	}
 	return DivideFood(f, cowsNum)
