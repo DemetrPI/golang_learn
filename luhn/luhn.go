@@ -3,6 +3,7 @@ package luhn
 import (
 	"regexp"
 	"strconv"
+	"strings"
 	"unicode/utf8"
 )
 
@@ -17,24 +18,20 @@ func Reverse(s string) string {
 	return string(buf)
 }
 
-func NumbersAndStrings(id string) (bool, error) {
-	return regexp.MatchString(`^[0-9 ]*$`, id)
+func NumbersOnlyAllowed(id string) (bool, error) {
+	return regexp.MatchString(`^[0-9]*$`, id)
 }
 
 func Valid(id string) bool {
-	num := regexp.MustCompile(`\D+`)
+	id = strings.ReplaceAll(id, " ", "")
 	if len(id) <= 1 {
 		return false
 	}
-    if id == " 0"{
-		return false
-	}
-	isValid, _ := NumbersAndStrings(id)
-	if !isValid {
+	onlyNums, _ := NumbersOnlyAllowed(id)
+	if !onlyNums {
 		return false
 	}
 
-	id = num.ReplaceAllString(id, "")
 	id = Reverse(id)
 	result := 0
 	for i, v := range id {
