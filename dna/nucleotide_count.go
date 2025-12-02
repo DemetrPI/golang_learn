@@ -1,5 +1,7 @@
 package dna
 
+import "fmt"
+
 // Histogram represents the count of each nucleotide.
 type Histogram map[rune]int
 
@@ -8,26 +10,26 @@ type DNA string
 
 // InvalidNucleotideError represents an error for an invalid nucleotide.
 type InvalidNucleotideError struct {
-	Nucleotide rune
+	Nucleotide string
 }
 
 // validNucleotides defines the set of valid nucleotide characters.
-var validNucleotides = map[rune]bool{
-	'A': true,
-	'C': true,
-	'G': true,
-	'T': true,
+var validNucleotides = map[string]struct{}{
+	"A": {},
+	"C": {},
+	"G": {},
+	"T": {},
 }
 
 // isValidNucleotide checks if a nucleotide is valid.
-func isValidNucleotide(nucleotide rune) bool {
+func isValidNucleotide(nucleotide string) bool {
 	_, valid := validNucleotides[nucleotide]
 	return valid
 }
 
 // Error implements the error interface for InvalidNucleotideError.
 func (e *InvalidNucleotideError) Error() string {
-	return "invalid nucleotide: " + string(e.Nucleotide)
+	return fmt.Sprintf("invalid nucleotide: %s", e.Nucleotide)
 }
 
 // Counts is a method on the DNA type that returns a histogram of nucleotide counts.
@@ -41,8 +43,8 @@ func (d DNA) Counts() (Histogram, error) {
 		return h, nil
 	}
 	for _, nucleotide := range d {
-		if !isValidNucleotide(nucleotide) {
-			return nil, &InvalidNucleotideError{Nucleotide: nucleotide}
+		if !isValidNucleotide(string(nucleotide)) {
+			return nil, &InvalidNucleotideError{Nucleotide: string(nucleotide)}
 		}
 		h[nucleotide]++
 	}
